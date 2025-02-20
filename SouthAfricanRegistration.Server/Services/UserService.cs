@@ -17,11 +17,11 @@ namespace SouthAfricanRegistration.Server.Services
             return await _userRepository.GetUsersAsync();
         }
 
-        public async Task AddUserAsync(string name, string IdNumber)
+        public async Task AddUserAsync(string name, string idNumber)
         {
            
-            int age = CalculateUserAge(IdNumber);
-            User user = new(name, IdNumber, age);
+            int age = CalculateUserAge(idNumber);
+            User user = new(name, idNumber, age);
             await _userRepository.AddUserAsync(user);
         }
 
