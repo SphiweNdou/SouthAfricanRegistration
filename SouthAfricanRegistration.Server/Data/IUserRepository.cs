@@ -2,7 +2,7 @@
 
 namespace SouthAfricanRegistration.Server.Data
 {
-    internal interface IUserRepository
+    public interface IUserRepository
     {
         Task<List<User>> GetUsersAsync();
         Task AddUserAsync(User user);

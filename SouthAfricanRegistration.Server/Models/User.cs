@@ -1,6 +1,6 @@
 ﻿namespace SouthAfricanRegistration.Server.Models
 {
-    internal class User
+    public class User
     {
         public int Id { get; private set; }
         public string SouthAfricanIdNumber { get; private set; }
