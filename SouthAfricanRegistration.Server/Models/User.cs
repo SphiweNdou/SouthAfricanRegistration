@@ -7,6 +7,8 @@
         public string Name { get; set; }
         public int Age { get; private set; }
 
+        public User() {}
+
         public User(string name, string IdNumber) 
         {
             Name = name;
@@ -16,7 +18,7 @@
 
         private static int CalculateUserAge(string idNumber)
         {
-            if( idNumber.Length != 13 || !int.TryParse(idNumber, out _) )
+            if( idNumber.Length != 13 || !long.TryParse(idNumber, out _) )
                 return 0;
             
             string birthYear = idNumber[..2];
