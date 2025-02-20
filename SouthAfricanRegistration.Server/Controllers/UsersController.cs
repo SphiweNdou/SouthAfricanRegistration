@@ -35,7 +35,7 @@ namespace SouthAfricanRegistration.Server.Controllers
             if (userAdded)
                 return Ok(new { Message = "User added successfully!" });
             else 
-                return BadRequest("Invalid user date.");
+                return BadRequest("Invalid user data.");
         }
     }
 }
