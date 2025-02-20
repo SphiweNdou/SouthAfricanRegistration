@@ -17,8 +17,9 @@ namespace SouthAfricanRegistration.Server.Services
             return await _userRepository.GetUsersAsync();
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task AddUserAsync(string name, string IdNumber)
         {
+           User user = new(name, IdNumber);
            await _userRepository.AddUserAsync(user);
         }
     }
