@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SouthAfricanRegistration;
 using SouthAfricanRegistration.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
