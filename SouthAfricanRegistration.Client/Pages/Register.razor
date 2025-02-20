@@ -1,0 +1,58 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<h3>Register User</h3>
+<EditForm Model="user" OnValidSubmit="SaveUser">
+    <DataAnnotationsValidator />
+    
+
+    <div>
+        <label>Name:</label>
+        <InputText @bind-Value="user.Name" class="form-control" />
+        <span class="text-danger"><ValidationMessage For="@(() => user.Name)" /></span>
+    </div>
+
+    <div>
+        <label>South African ID:</label>
+        <InputText @bind-Value="user.SouthAfricanID" class="form-control" />
+        <span class="text-danger"><ValidationMessage For="@(() => user.SouthAfricanID)" /></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <p class="alert alert-success">@successMessage</p>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="alert alert-danger">@errorMessage</p>
+}
+
+@code {
+    private UserDto user = new();
+    private string successMessage = "";
+    private string errorMessage = "";
+
+    private async Task SaveUser()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/users", user);
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = "User registered successfully!";
+            }
+            else
+            {
+                errorMessage = "Error registering user.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred: " + ex.Message;
+        }
+        
+    }
+}
