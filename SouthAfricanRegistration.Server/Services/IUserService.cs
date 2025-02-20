@@ -5,6 +5,6 @@ namespace SouthAfricanRegistration.Server.Services
     public interface IUserService
     {
         Task<List<User>> GetUsersAsync();
-        Task AddUserAsync(string name, string IdNumber);
+        Task<bool>  AddUserAsync(string name, string IdNumber);
     }
 }

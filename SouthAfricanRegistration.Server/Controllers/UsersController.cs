@@ -25,13 +25,17 @@ namespace SouthAfricanRegistration.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser([FromBody] UserDto userDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             if (userDto == null || string.IsNullOrWhiteSpace(userDto.Name) || string.IsNullOrWhiteSpace(userDto.SouthAfricanID))
-            {
                 return BadRequest("Invalid user data.");
-            }
             
-            await _userService.AddUserAsync(userDto.Name, userDto.SouthAfricanID);
-            return Ok(new { Message = "User added successfully!" });
+            bool userAdded = await _userService.AddUserAsync(userDto.Name, userDto.SouthAfricanID);
+
+            if (userAdded)
+                return Ok(new { Message = "User added successfully!" });
+            else 
+                return BadRequest("Invalid user date.");
         }
     }
 }

@@ -17,18 +17,20 @@ namespace SouthAfricanRegistration.Server.Services
             return await _userRepository.GetUsersAsync();
         }
 
-        public async Task AddUserAsync(string name, string idNumber)
+        public async Task<bool> AddUserAsync(string name, string idNumber)
         {
            
             int age = CalculateUserAge(idNumber);
+            if (age < 18) return false;
             User user = new(name, idNumber, age);
             await _userRepository.AddUserAsync(user);
+            return true;
         }
 
         private static int CalculateUserAge(string idNumber)
         {
             if (idNumber.Length != 13 || !long.TryParse(idNumber, out _))
-                return 0;
+                return -1;
 
             string birthYear = idNumber[..2];
             string birthMonth = idNumber[2..4];
