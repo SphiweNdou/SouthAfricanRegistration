@@ -29,7 +29,6 @@ namespace SouthAfricanRegistration.Server.Controllers
             {
                 return BadRequest("Invalid user data.");
             }
-
             
             await _userService.AddUserAsync(userDto.Name, userDto.SouthAfricanID);
             return Ok(new { Message = "User added successfully!" });
