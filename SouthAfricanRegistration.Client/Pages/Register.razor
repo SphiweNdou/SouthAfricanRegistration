@@ -2,23 +2,31 @@
 @inject HttpClient Http
 
 <h3>Register User</h3>
-<EditForm Model="user" OnValidSubmit="SaveUser">
-    <DataAnnotationsValidator />
 
-    <div>
-        <label>Name:</label>
-        <InputText @bind-Value="user.Name" class="form-control" />
-        <span class="text-danger"><ValidationMessage For="@(() => user.Name)" /></span>
-    </div>
+<button class="btn btn-primary mb-3" @onclick="ShowForm">Add User</button>
 
-    <div>
-        <label>South African ID:</label>
-        <InputText @bind-Value="user.SouthAfricanID" class="form-control" />
-        <span class="text-danger"><ValidationMessage For="@(() => user.SouthAfricanID)" /></span>
-    </div>
+@if (displayForm)
+{
+    <EditForm Model="user" OnValidSubmit="SaveUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <button type="submit" class="btn btn-primary mt-2">Submit</button>
-</EditForm>
+        <div>
+            <label>Name:</label>
+            <InputText @bind-Value="user.Name" class="form-control" />
+            <span class="text-danger"><ValidationMessage For="@(() => user.Name)" /></span>
+        </div>
+
+        <div>
+            <label>South African ID:</label>
+            <InputText @bind-Value="user.SouthAfricanID" class="form-control" />
+            <span class="text-danger"><ValidationMessage For="@(() => user.SouthAfricanID)" /></span>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">@saveButtonLabel</button>
+        <button type="button" class="btn btn-secondary mt-2 ms-2" @onclick="CancelForm">Cancel</button>
+    </EditForm>
+}
 
 @if (!string.IsNullOrEmpty(successMessage))
 {
@@ -29,29 +37,126 @@
     <p class="alert alert-danger">@errorMessage</p>
 }
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>South African ID</th>
+            <th>Age</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.SouthAfricanID</td>
+                <td>@user.Age</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" @onclick="() => EditUser(user)">Edit</button>
+                    <button class="btn btn-danger btn-sm ms-2" @onclick="() => DeleteUserAsync(user.GUID)">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 @code {
 
     private UserDto user = new();
     private string successMessage = "";
     private string errorMessage = "";
+    private bool displayForm = false;
+    private bool editMode = false;
+    private List<UserDto> users = new();
+    private int editingUserId;
+    private string saveButtonLabel = "Save";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        users = await Http.GetFromJsonAsync<List<UserDto>>("api/users") ?? new List<UserDto>();
+    }
 
     private async Task SaveUser()
     {
         try
         {
-            var response = await Http.PostAsJsonAsync("api/users", user);
-            if (response.IsSuccessStatusCode)
+            HttpResponseMessage response;
+
+            if (editMode)
             {
-                successMessage = "User registered successfully!";
+                response = await Http.PutAsJsonAsync($"api/users/{editingUserId}", user);
             }
             else
             {
-                errorMessage = "Error registering user.";
+                response = await Http.PostAsJsonAsync("api/users", user);
+            }
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = editMode ? "User updated successfully" : "User added successfully";
+                errorMessage = "";
+                displayForm = false;
+                await LoadUsers();
+            }
+            else
+            {
+                errorMessage = "Error ";
             }
         }
         catch (Exception ex)
         {
             errorMessage = "An error occurred: " + ex.Message;
         }
+    }
+
+    private void EditUser(UserDto existingUser)
+    {
+        user = new UserDto
+            {
+                Name = existingUser.Name,
+                SouthAfricanID = existingUser.SouthAfricanID
+            };
+        editingUserId = existingUser.GUID;
+        displayForm = true;
+        editMode = true;
+        saveButtonLabel = "Update";
+    }
+
+    public async Task DeleteUserAsync(int guid)
+    {
+        if (guid > 0)
+        {
+            var response = await Http.DeleteAsync($"api/users/{guid}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = "User deleted successfully!";
+                errorMessage = "";
+                await LoadUsers();
+            }
+            else
+            {
+                errorMessage = "Error deleting user.";
+            }
+        }
+    }
+
+    private void ShowForm()
+    {
+        user = new UserDto();
+        displayForm = true;
+        editMode = false;
+        saveButtonLabel = "Save";
+    }
+
+    private void CancelForm()
+    {
+        displayForm = false;
     }
 }

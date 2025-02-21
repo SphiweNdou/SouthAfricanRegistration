@@ -11,5 +11,9 @@ namespace Shared.Dtos
         [StringLength(13, MinimumLength = 13, ErrorMessage = "ID number must be exactly 13 digits")]
         [RegularExpression(@"^\d{13}$", ErrorMessage = "ID number can only contain digits")]
         public string SouthAfricanID { get; set; }
+
+        public int Age { get; set; }
+
+        public int GUID { get; set; }
     }
 }
