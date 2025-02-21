@@ -4,7 +4,6 @@
 <h3>Register User</h3>
 <EditForm Model="user" OnValidSubmit="SaveUser">
     <DataAnnotationsValidator />
-    
 
     <div>
         <label>Name:</label>
@@ -31,6 +30,7 @@
 }
 
 @code {
+
     private UserDto user = new();
     private string successMessage = "";
     private string errorMessage = "";
@@ -53,6 +53,5 @@
         {
             errorMessage = "An error occurred: " + ex.Message;
         }
-        
     }
 }
