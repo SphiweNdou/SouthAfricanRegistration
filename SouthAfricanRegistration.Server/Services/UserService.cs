@@ -1,4 +1,5 @@
-﻿using SouthAfricanRegistration.Server.Data;
+﻿using Shared.Dtos;
+using SouthAfricanRegistration.Server.Data;
 using SouthAfricanRegistration.Server.Models;
 
 namespace SouthAfricanRegistration.Server.Services
@@ -24,6 +25,29 @@ namespace SouthAfricanRegistration.Server.Services
             if (age < 18) return false;
             User user = new(name, idNumber, age);
             await _userRepository.AddUserAsync(user);
+            return true;
+        }
+
+        public async Task<bool> UpdateUserAsync(int id, string name, string idNumber)
+        {
+
+            var user = await _userRepository.GetUserAsync(id);
+            if (user == default(User)) return false;
+
+            int age = CalculateUserAge(idNumber);
+            if (age < 18) return false;
+
+            user.UpdateUserDetails(name, idNumber, age);
+            await _userRepository.UpdateUserAsync(user);
+            return true;
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await _userRepository.GetUserAsync(id);
+            if (user == null) return false;
+
+            await _userRepository.DeleteUserAsync(user);
             return true;
         }
 

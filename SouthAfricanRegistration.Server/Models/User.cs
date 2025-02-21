@@ -15,5 +15,12 @@
             SouthAfricanIdNumber = IdNumber;
             Age = age;
         }
+
+        public void UpdateUserDetails(string name, string idNumber, int age)
+        {
+            Name = name;
+            SouthAfricanIdNumber = idNumber;
+            Age = age;
+        }
     }
 }
