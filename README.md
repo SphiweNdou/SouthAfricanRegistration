@@ -60,5 +60,5 @@ A full-stack web application built using **Blazor WebAssembly** for the frontend
 
 **Sphiwe Ndou**  
 Software Developer 
-GitHub: [@yourusername](https://github.com/SphiweNdou)  
+GitHub: [@SphiweNdou](https://github.com/SphiweNdou)  
 
